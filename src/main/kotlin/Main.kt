@@ -1,33 +1,22 @@
 fun main() {
-    val a = Grid(2, 5)
-}
+    val grid = Grid(8, 4)
+    grid.nodes[3][3].crossable = false
+    grid.nodes[2][3].crossable = false
+    grid.nodes[1][1].crossable = false
+    grid.nodes[1][0].crossable = false
+    grid.nodes[0][6].crossable = false
 
-fun findPath(source: Grid.Node, target: Grid.Node) {
-    val open = ArrayList<Grid.Node>()
-    val closed = HashSet<Grid.Node>()
-    open.add(source)
-    while (open.isNotEmpty()) {
-
+    val list = grid.findPath(grid.nodes[0][0], grid.nodes[3][0])
+    for (array in grid.nodes) {
+        for (node in array) {
+            if (list.contains(node)) {
+                print("[    ] ")
+            } else if (node.crossable == false) {
+                print("++++++ ")
+            } else {
+                print("(${node.x}, ${node.y}) ")
+            }
+        }
+        println()
     }
-    /*
-    open // set of nodes to be evaluated
-    closed // set of nodes already evaluated
-    add start node to open
-
-    loop
-        current = node in open with lowest f_cost
-        remove current from open
-        add current to closed
-
-        if current is the target node // path has been found
-            return
-        foreach neighbor of the current node
-            if neighbor is not traversable or neighbor is in closed
-                skip to the next neighbor
-            if new path to neighbor is shorter OR neighbor is not in open
-                set f_cost of neighbor
-                set parent of neighbor to current
-                if neighbor is not in open
-                    add neighbor to open
-     */
 }
