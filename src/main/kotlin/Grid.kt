@@ -1,11 +1,10 @@
-class Grid(width: Int, height: Int) {
-    val grid = arrayOf<Array<Node>>()
-    val hCost
-    val gCost
+class Grid(gridSizeX: Int, gridSizeY: Int) {
+    var grid: Array<Array<Node>>
+
     init {
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                grid[x][y] = Node(false)
+        grid = Array(gridSizeY) { x ->
+            Array(gridSizeX) { y ->
+                Node(x, y, false)
             }
         }
     }
@@ -13,4 +12,14 @@ class Grid(width: Int, height: Int) {
     fun getFCost(x: Int, y: Int) {
         return
     }
+
+    fun getGCost() {
+        return
+    }
+
+    fun getHCost() {
+        return
+    }
+
+    data class Node(val x: Int, val y: Int, var walkable: Boolean)
 }

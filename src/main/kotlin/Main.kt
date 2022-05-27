@@ -1,12 +1,10 @@
 fun main() {
-    val a = Grid(5, 5)
-
-
+    val a = Grid(2, 5)
 }
 
-fun findPath(source: Node, target: Node) {
-    val open = ArrayList<Node>()
-    val closed = HashSet<Node>()
+fun findPath(source: Grid.Node, target: Grid.Node) {
+    val open = ArrayList<Grid.Node>()
+    val closed = HashSet<Grid.Node>()
     open.add(source)
     while (open.isNotEmpty()) {
 
