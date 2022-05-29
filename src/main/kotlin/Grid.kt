@@ -1,7 +1,12 @@
+import java.lang.Math.pow
+import java.lang.Thread.sleep
 import kotlin.math.abs
+import kotlin.math.sqrt
 
 class Grid(gridSizeX: Int, gridSizeY: Int) {
     var nodes: Array<Array<Node>>
+    val numCols: Int
+    val numRows: Int
 
     init {
         nodes = Array(gridSizeY) { y ->
@@ -9,10 +14,54 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
                 Node(x, y, true)
             }
         }
+        this.numCols = gridSizeX
+        this.numRows = gridSizeY
+    }
+
+    fun print(path: List<Node>) {
+        print("+")
+        for (col in 0 until numCols) {
+            print("---")
+        }
+        print("+")
+        println()
+        for (array in nodes) {
+            print("|")
+            for (node in array) {
+                if (path.contains(node)) {
+                    print(" . ")
+                } else if (node.crossable == false) {
+                    print(" x ")
+                } else {
+                    print("   ")
+                }
+            }
+            println("|")
+        }
+        print("+")
+        for (col in 0 until numCols) {
+            print("---")
+        }
+        println("+")
+    }
+
+    fun showPath(path: ArrayList<Node>) {
+        for (i in 0 until path.size) {
+            print("\u001b[H\u001b[2J")
+            System.out.flush()
+            val pathSoFar = path.subList(0, i)
+            this.print(pathSoFar)
+            sleep(50)
+        }
+        println("Path length: ${path.size}")
+    }
+
+    fun node(x: Int, y: Int): Node {
+        return nodes[y][x]
     }
 
     fun getNeighbors(node: Node, searchRadius: Int): ArrayList<Node> {
-        var neighbors = arrayListOf<Node>()
+        val neighbors = arrayListOf<Node>()
 
         for (rowOffset in -searchRadius..searchRadius) {
             for (colOffset in -searchRadius..searchRadius) {
@@ -38,9 +87,17 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
         val distY = abs(nodeA.y - nodeB.y)
 
         if (distX > distY) {
-            return 14 * distY + 10 * (distY - distX)
+            return 14 * distY + 10 * (distX - distY)
         }
         return 14 * distX + 10 * (distY - distX)
+    }
+
+    fun distanceBetweenDouble(nodeA: Node, nodeB: Node): Double {
+        // gives the same length paths as its integer counterpart and takes up to 500x as long
+        val distX = abs(nodeA.x - nodeB.x)
+        val distY = abs(nodeA.y - nodeB.y)
+
+        return sqrt(pow(distX.toDouble(), 2.0) + pow(distY.toDouble(), 2.0))
     }
 
     fun retracePath(startNode: Node, targetNode: Node): ArrayList<Node> {
@@ -51,7 +108,7 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
             path.add(currentNode)
             currentNode = currentNode.parent!!
         }
-        //path.reverse()
+        path.reverse()
         return path
     }
 
