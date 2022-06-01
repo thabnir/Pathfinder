@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.formdev:flatlaf:2.2")
     testImplementation(kotlin("test"))
 }
 

@@ -18,6 +18,10 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
         this.numRows = gridSizeY
     }
 
+    fun selectStartNode(x: Int, y: Int) {
+        // nodes[y][x]. = true
+    }
+
     fun print(path: List<Node>) {
         print("+")
         for (col in 0 until numCols) {
