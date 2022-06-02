@@ -4,9 +4,11 @@ import kotlin.math.abs
 import kotlin.math.sqrt
 
 class Grid(gridSizeX: Int, gridSizeY: Int) {
-    var nodes: Array<Array<Node>>
+    private var nodes: Array<Array<Node>>
     val numCols: Int
     val numRows: Int
+    var startNode: Node? = null
+    var targetNode: Node? = null
 
     init {
         nodes = Array(gridSizeY) { y ->
@@ -18,8 +20,43 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
         this.numRows = gridSizeY
     }
 
-    fun selectStartNode(x: Int, y: Int) {
-        // nodes[y][x]. = true
+    fun setWall(x: Int, y: Int, isWall: Boolean) {
+        nodes[y][x].isCrossable = !isWall
+    }
+
+    fun setStartNode(xLoc: Int, yLoc: Int) {
+        startNode = nodes[yLoc][xLoc]
+        nodes[yLoc][xLoc].isCrossable = true
+    }
+
+    fun setTargetNode(xLoc: Int, yLoc: Int) {
+        targetNode = nodes[yLoc][xLoc]
+        nodes[yLoc][xLoc].isCrossable = true
+    }
+
+    fun print() {
+        print("+")
+        for (col in 0 until numCols) {
+            print("---")
+        }
+        print("+")
+        println()
+        for (array in nodes) {
+            print("|")
+            for (node in array) {
+                if (node.isCrossable == false) {
+                    print(" x ")
+                } else {
+                    print("   ")
+                }
+            }
+            println("|")
+        }
+        print("+")
+        for (col in 0 until numCols) {
+            print("---")
+        }
+        println("+")
     }
 
     fun print(path: List<Node>) {
@@ -34,7 +71,7 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
             for (node in array) {
                 if (path.contains(node)) {
                     print(" . ")
-                } else if (node.crossable == false) {
+                } else if (node.isCrossable == false) {
                     print(" x ")
                 } else {
                     print("   ")
@@ -66,7 +103,6 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
 
     fun getNeighbors(node: Node, searchRadius: Int): ArrayList<Node> {
         val neighbors = arrayListOf<Node>()
-
         for (rowOffset in -searchRadius..searchRadius) {
             for (colOffset in -searchRadius..searchRadius) {
                 if (colOffset == 0 && rowOffset == 0) {
@@ -89,7 +125,6 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
     fun distanceBetween(nodeA: Node, nodeB: Node): Int {
         val distX = abs(nodeA.x - nodeB.x)
         val distY = abs(nodeA.y - nodeB.y)
-
         if (distX > distY) {
             return 14 * distY + 10 * (distX - distY)
         }
@@ -97,10 +132,9 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
     }
 
     fun distanceBetweenDouble(nodeA: Node, nodeB: Node): Double {
-        // gives the same length paths as its integer counterpart and takes up to 500x as long
+        // gives the same length paths as its integer counterpart and takes SIGNIFICANTLY longer
         val distX = abs(nodeA.x - nodeB.x)
         val distY = abs(nodeA.y - nodeB.y)
-
         return sqrt(pow(distX.toDouble(), 2.0) + pow(distY.toDouble(), 2.0))
     }
 
@@ -114,6 +148,17 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
         }
         path.reverse()
         return path
+    }
+
+    fun findPath(): ArrayList<Node> {
+        startNode?.let {
+            targetNode?.let { it1 ->
+                return findPath(it, it1)
+            }
+        }
+        val emptyListNOPATHFOUND = arrayListOf<Node>()
+        return emptyListNOPATHFOUND
+        // TODO: figure out how to handle the case where there is no path
     }
 
     fun findPath(startNode: Node, targetNode: Node): ArrayList<Node> {
@@ -138,7 +183,7 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
             }
 
             for (neighbor in getNeighbors(node)) {
-                if (!neighbor.crossable || closedSet.contains(neighbor)) {
+                if (!neighbor.isCrossable || closedSet.contains(neighbor)) {
                     continue
                 }
                 val newCostToNeighbor = node.gCost + distanceBetween(node, neighbor)
@@ -153,11 +198,11 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
                 }
             }
         }
-        val a = arrayListOf<Node>()
-        return a
+        val emptyListNOPATHFOUND = arrayListOf<Node>()
+        return emptyListNOPATHFOUND
     }
 
-    data class Node(val x: Int, val y: Int, var crossable: Boolean) {
+    data class Node(val x: Int, val y: Int, var isCrossable: Boolean) {
         val fCost: Int
             get() = hCost + gCost
         var hCost: Int = 0

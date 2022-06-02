@@ -1,15 +1,8 @@
 fun main() {
     // val grid = Grid(20, 20)
-    val panel = GraphicsPanel(40, 30)
+    val panel = GraphicsPanel(128, 72)
 
     /*
-    for (x in 0 until grid.numCols - 1) {
-        for (y in 1 until grid.numRows - 1) {
-            if (y % 2 == 0) {
-                grid.node(x, y).crossable = false
-            }
-        }
-    }
     grid.node(30, 178).crossable = true
     val startTime = currentTimeMillis()
     println(startTime)
