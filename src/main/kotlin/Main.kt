@@ -1,6 +1,7 @@
 fun main() {
     // val grid = Grid(20, 20)
-    val panel = GraphicsPanel(128, 72)
+    val panel = GraphicsPanel(32, 18)
+    panel.requestFocus()
 
     /*
     grid.node(30, 178).crossable = true

@@ -1,3 +1,4 @@
+import com.formdev.flatlaf.FlatDarkLaf
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.GridLayout
@@ -12,11 +13,12 @@ class GraphicsPanel(gridSizeX: Int, gridSizeY: Int) : JPanel() {
     lateinit var buttonGrid: JPanel
 
     init {
-        //FlatIntelliJLaf.setup()
+        FlatDarkLaf.setup()
+        System.setProperty("sun.java2d.uiScale", "1.0")
         grid = Grid(gridSizeX, gridSizeY)
         frame = JFrame("Pathfinder")
         frame.layout = BorderLayout()
-        frame.preferredSize = Dimension(1600, 900)
+        frame.preferredSize = Dimension(1920/2, 1080/2)
         frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
         frame.add(createButtonGrid(gridSizeX, gridSizeY))
         frame.pack()

@@ -1,4 +1,5 @@
 import java.awt.Color
+import java.awt.Dimension
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.event.MouseEvent
@@ -15,18 +16,19 @@ class FancyButton(
 
     val wallColor = Color(0, 0, 0)
     val clearColor = Color(255, 255, 255)
-    val startColor = Color(0, 255, 0)
-    val pathColor = Color(255, 255, 0)
+    val startColor = Color(0, 0, 255)
+    val pathColor = Color(0,255,0)
     val endColor = Color(255, 0, 0)
     val gridNode: Grid.Node = grid.node(xLoc, yLoc)
 
     init {
-        isBorderPainted = false
-        isRolloverEnabled = false
-        isFocusPainted = false
+        //isBorderPainted = false
+        //isRolloverEnabled = false
+        //isFocusPainted = false
+        preferredSize = Dimension(40,40)
         addKeyListener(object : KeyListener {
             override fun keyPressed(e: KeyEvent) {
-                var button = e.source as FancyButton
+                val button = e.source as FancyButton
                 when (e.keyCode) {
                     KeyEvent.VK_UP -> {
                         buttons[Math.floorMod(button.yLoc - 1, buttons.size)][button.xLoc].requestFocusInWindow()
@@ -40,13 +42,14 @@ class FancyButton(
                     KeyEvent.VK_RIGHT -> {
                         buttons[button.yLoc][Math.floorMod(button.xLoc + 1, buttons[0].size)].requestFocusInWindow()
                     }
-                    KeyEvent.VK_S -> {
+                    KeyEvent.VK_SHIFT -> {
                         setStartNode()
                     }
-                    KeyEvent.VK_D -> {
+                    KeyEvent.VK_F -> {
                         setTargetNode()
                     }
-                    // KeyEvent.VK_SPACE -> graphicsPanel.findPath()
+                    KeyEvent.VK_SPACE -> setWall()
+                    KeyEvent.VK_BACK_SPACE -> setClear()
                 }
             }
 
