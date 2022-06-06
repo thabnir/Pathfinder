@@ -4,8 +4,9 @@ import java.awt.Dimension
 import java.awt.GridLayout
 import javax.swing.JFrame
 import javax.swing.JPanel
+import javax.swing.JScrollPane
 
-class GraphicsPanel(gridSizeX: Int, gridSizeY: Int) : JPanel() {
+class GraphicsPanel(gridSizeX: Int, gridSizeY: Int, val isTaxicab: Boolean, val isScrolly: Boolean) : JPanel() {
     val frame: JFrame
     val grid: Grid
     val buttons = ArrayList<ArrayList<FancyButton>>()
@@ -15,17 +16,24 @@ class GraphicsPanel(gridSizeX: Int, gridSizeY: Int) : JPanel() {
     init {
         FlatDarkLaf.setup()
         System.setProperty("sun.java2d.uiScale", "1.0")
-        grid = Grid(gridSizeX, gridSizeY)
+        grid = Grid(gridSizeX, gridSizeY, isTaxicab)
         frame = JFrame("Pathfinder")
         frame.layout = BorderLayout()
         frame.preferredSize = Dimension(1920/2, 1080/2)
         frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-        frame.add(createButtonGrid(gridSizeX, gridSizeY))
+
+        if (isScrolly) {
+            val scrollPanel = JScrollPane(createButtonGrid(gridSizeX, gridSizeY))
+            frame.add(scrollPanel)
+        } else {
+            frame.add(createButtonGrid(gridSizeX, gridSizeY))
+        }
+
         frame.pack()
         frame.setLocationRelativeTo(null)
-
-        for (x in 0 until grid.numCols - 1) {
-            for (y in 1 until grid.numRows - 1) {
+        // * checkerboards the grid
+        for (x in 0 until grid.gridSizeX) {
+            for (y in 0 until grid.gridSizeY) {
                 if ((y + x) % 2 == 0) {
                     grid.node(x, y).isCrossable = false
                 }
@@ -33,7 +41,6 @@ class GraphicsPanel(gridSizeX: Int, gridSizeY: Int) : JPanel() {
         }
         buttons[0][0].matchToGrid()
         frame.isVisible = true
-
     }
 
     private fun createButtonGrid(gridSizeX: Int, gridSizeY: Int): JPanel {

@@ -3,21 +3,17 @@ import java.lang.Thread.sleep
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-class Grid(gridSizeX: Int, gridSizeY: Int) {
+class Grid(val gridSizeX: Int, val gridSizeY: Int, val isTaxicab: Boolean) {
     private var nodes: Array<Array<Node>>
-    val numCols: Int
-    val numRows: Int
     var startNode: Node? = null
     var targetNode: Node? = null
 
     init {
-        nodes = Array(gridSizeY) { y ->
-            Array(gridSizeX) { x ->
+        nodes = Array(this.gridSizeY) { y ->
+            Array(this.gridSizeX) { x ->
                 Node(x, y, true)
             }
         }
-        this.numCols = gridSizeX
-        this.numRows = gridSizeY
     }
 
     fun setWall(x: Int, y: Int, isWall: Boolean) {
@@ -36,7 +32,7 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
 
     fun print() {
         print("+")
-        for (col in 0 until numCols) {
+        for (col in 0 until this.gridSizeX) {
             print("---")
         }
         print("+")
@@ -53,7 +49,7 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
             println("|")
         }
         print("+")
-        for (col in 0 until numCols) {
+        for (col in 0 until this.gridSizeX) {
             print("---")
         }
         println("+")
@@ -61,7 +57,7 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
 
     fun print(path: List<Node>) {
         print("+")
-        for (col in 0 until numCols) {
+        for (col in 0 until this.gridSizeX) {
             print("---")
         }
         print("+")
@@ -80,7 +76,7 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
             println("|")
         }
         print("+")
-        for (col in 0 until numCols) {
+        for (col in 0 until this.gridSizeX) {
             print("---")
         }
         println("+")
@@ -122,6 +118,25 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
         return getNeighbors(node, 1)
     }
 
+
+    fun getNeighborsTaxicab(node: Node): ArrayList<Node> {
+        val neighbors = arrayListOf<Node>()
+        val neighborDirections = arrayListOf(
+            Pair(1, 0),  // right one
+            Pair(0, 1),  // up one
+            Pair(-1, 0), // left one
+            Pair(0, -1)  // down one
+        )
+        for (neighborDirection in neighborDirections) {
+            val targetCol = node.x + neighborDirection.first
+            val targetRow = node.y + neighborDirection.second
+            if (targetRow >= 0 && targetRow < nodes.size && targetCol >= 0 && targetCol < nodes[targetRow].size) {
+                neighbors.add(nodes[targetRow][targetCol])
+            }
+        }
+        return neighbors
+    }
+
     fun distanceBetween(nodeA: Node, nodeB: Node): Int {
         val distX = abs(nodeA.x - nodeB.x)
         val distY = abs(nodeA.y - nodeB.y)
@@ -158,7 +173,6 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
         }
         val emptyListNOPATHFOUND = arrayListOf<Node>()
         return emptyListNOPATHFOUND
-        // TODO: figure out how to handle the case where there is no path
     }
 
     fun findPath(startNode: Node, targetNode: Node): ArrayList<Node> {
@@ -182,7 +196,8 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
                 return retracePath(startNode, targetNode)
             }
 
-            for (neighbor in getNeighbors(node)) {
+            val neighbors = if(isTaxicab) getNeighborsTaxicab(node) else getNeighbors(node)
+            for (neighbor in neighbors) {
                 if (!neighbor.isCrossable || closedSet.contains(neighbor)) {
                     continue
                 }
@@ -200,6 +215,14 @@ class Grid(gridSizeX: Int, gridSizeY: Int) {
         }
         val emptyListNOPATHFOUND = arrayListOf<Node>()
         return emptyListNOPATHFOUND
+    }
+
+    fun generateMaze() {
+        /*
+        Throw all the edges in the graph into a big burlap sack. (Or, you know, a set or something.)
+        Pull out the edge with the lowest weight. If the edge connects two disjoint trees, join the trees. Otherwise, throw that edge away.
+        Repeat until there are no more edges left.
+         */
     }
 
     data class Node(val x: Int, val y: Int, var isCrossable: Boolean) {

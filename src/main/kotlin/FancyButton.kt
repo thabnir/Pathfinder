@@ -17,15 +17,15 @@ class FancyButton(
     val wallColor = Color(0, 0, 0)
     val clearColor = Color(255, 255, 255)
     val startColor = Color(0, 0, 255)
-    val pathColor = Color(0,255,0)
+    val pathColor = Color(0, 255, 0)
     val endColor = Color(255, 0, 0)
     val gridNode: Grid.Node = grid.node(xLoc, yLoc)
 
     init {
         //isBorderPainted = false
-        //isRolloverEnabled = false
-        //isFocusPainted = false
-        preferredSize = Dimension(40,40)
+        isRolloverEnabled = false
+        // isFocusPainted = false
+        preferredSize = Dimension(32,32)
         addKeyListener(object : KeyListener {
             override fun keyPressed(e: KeyEvent) {
                 val button = e.source as FancyButton
@@ -72,9 +72,9 @@ class FancyButton(
             override fun mouseEntered(e: MouseEvent) {
                 val button = e.source as FancyButton
                 button.requestFocus()
-                if (e.getModifiersEx() == MouseEvent.BUTTON1_DOWN_MASK) {
+                if (e.modifiersEx == MouseEvent.BUTTON1_DOWN_MASK) {
                     setWall()
-                } else if (e.getModifiersEx() == MouseEvent.BUTTON3_DOWN_MASK) {
+                } else if (e.modifiersEx == MouseEvent.BUTTON3_DOWN_MASK) {
                     setClear()
                 }
             }
