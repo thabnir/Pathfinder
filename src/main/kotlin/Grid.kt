@@ -118,7 +118,6 @@ class Grid(val gridSizeX: Int, val gridSizeY: Int, val isTaxicab: Boolean) {
         return getNeighbors(node, 1)
     }
 
-
     fun getNeighborsTaxicab(node: Node): ArrayList<Node> {
         val neighbors = arrayListOf<Node>()
         val neighborDirections = arrayListOf(

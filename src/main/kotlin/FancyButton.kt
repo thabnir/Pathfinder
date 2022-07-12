@@ -52,7 +52,6 @@ class FancyButton(
                     KeyEvent.VK_BACK_SPACE -> setClear()
                 }
             }
-
             override fun keyTyped(e: KeyEvent) {}
             override fun keyReleased(e: KeyEvent) {}
         })
